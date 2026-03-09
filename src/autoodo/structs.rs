@@ -124,3 +124,138 @@ pub struct TimeEntry {
     pub hourly_rate: f64,
     pub services_name: String,
 }
+
+#[derive(Deserialize)]
+pub struct AccessGroup {
+    pub id: i32,
+    pub name: String,
+    pub users_ids: Vec<i32>,
+    pub has_elevated_access: Option<bool>,
+    pub has_master_data_access: Option<bool>,
+    pub company_default: bool,
+}
+
+#[derive(Deserialize)]
+pub struct Pagination {
+    pub items_per_page: i32,
+    pub current_page: i32,
+    pub count_pages: i32,
+    pub count_items: i32,
+}
+
+#[derive(Deserialize)]
+pub struct Service {
+    pub id: i32,
+    pub name: String, // interne Arbeitszeit...
+    pub number: Option<String>,
+    pub active: bool,
+}
+
+#[derive(Deserialize)]
+pub struct Project {
+    pub id: i32,
+    pub customers_id: i32,
+    pub name: String,
+    pub number: String,
+    pub active: bool,
+    pub billable_default: bool,
+    pub note: String,
+    pub billed_money: f64,
+    pub billed_completely: bool,
+    pub completed: bool,
+    pub completed_at: Option<String>,
+    pub revenue_factor: f64,
+    pub deadline: Option<String>,
+    pub start_date: Option<String>,
+    pub automatic_completion: bool,
+    pub test_data: bool,
+    pub count_subprojects: i32,
+    pub budget: serde_json::Value,
+    pub bill_service_id: Option<String>,
+    pub service_assignments: Vec<serde_json::Value>,
+}
+
+#[derive(Deserialize)]
+pub struct Team {
+    pub id: i32,
+    pub name: String,
+    pub leader: i32,
+    pub user_ids: Vec<i32>,
+}
+
+#[derive(Deserialize)]
+pub struct UserFilter {
+    pub active: bool,
+    pub fulltext: Option<String>,
+    pub teams_id: Option<Vec<i32>>,
+}
+
+// Holy cow... what in heavens name is this format? Used for query parameters...
+// TODO: use a custom builder later on for such "things"
+impl ToString for UserFilter {
+    fn to_string(&self) -> String {
+        let mut query = String::new();
+        if let Some(teams_id) = &self.teams_id {
+            let teams_str: Vec<String> = teams_id.iter().map(|id| id.to_string()).collect();
+            query.push_str("filter[teams_id][]=");
+            query.push_str(&teams_str.join("&filter[teams_id][]="));
+        }
+        if self.active {
+            query.push_str("&filter[active]=true");
+        }
+        if let Some(fulltext) = &self.fulltext {
+            query.push_str(&format!("&filter[fulltext]={}", fulltext));
+        }
+        query
+    }
+}
+
+#[derive(Deserialize)]
+pub struct EntityReference {
+    pub id: i32,
+    pub name: String,
+}
+
+#[derive(Deserialize)]
+pub struct RunningClock {
+    pub id: i32,
+    pub time_since: String,
+    pub customer: EntityReference,
+    pub project: Option<EntityReference>,
+    pub subproject: Option<EntityReference>,
+    pub service: Option<EntityReference>,
+    pub text: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct UserAbsence {
+    pub id: i32,
+    pub users_id: i32,
+    pub date_since: String,
+    pub date_until: String,
+    pub status: i32,
+    pub public_note: Option<String>,
+    pub count_days: f64,
+    #[serde(rename = "type")]
+    pub absence_type: Option<i32>,
+    pub note: Option<String>,
+    pub sick_note: Option<bool>,
+    pub count_hours: Option<f64>,
+    pub date_enquired: Option<String>,
+    pub date_approved: Option<String>,
+    pub approved_by: Option<i32>,
+}
+
+// Inofficial from web
+#[derive(Deserialize)]
+pub struct UserPresence {
+    pub id: i32,
+    pub name: String,
+    pub can_see_timetable: bool,
+    pub teams_id: i32,
+    pub is_work_day: bool,
+    pub nonbusiness_day: Option<serde_json::Value>,
+    pub absences: Vec<UserAbsence>,
+    pub running_clock: Option<RunningClock>,
+    pub can_manage_absences: bool,
+}
