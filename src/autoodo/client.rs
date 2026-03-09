@@ -18,12 +18,23 @@ pub struct ClockodoClient {
 
 pub enum ClockodoEndpoint {
     Myself,
+    Presences,
 }
+
+const MYSELF_ENDPOINT: &'static str = "/api/v4/users/me";
+const PRESENCES_ENDPOINT: &'static str = "/api/v2/users/presences";
 
 impl ToString for ClockodoEndpoint {
     fn to_string(&self) -> String {
+        self.as_ref().to_string()
+    }
+}
+
+impl AsRef<str> for ClockodoEndpoint {
+    fn as_ref(&self) -> &str {
         match self {
-            ClockodoEndpoint::Myself => "/api/v4/users/me".to_string(),
+            ClockodoEndpoint::Myself => MYSELF_ENDPOINT,
+            ClockodoEndpoint::Presences => PRESENCES_ENDPOINT,
         }
     }
 }
@@ -47,7 +58,7 @@ impl ClockodoClient {
     }
 
     pub async fn get<T: DeserializeOwned>(&self, endpoint: ClockodoEndpoint) -> Result<T> {
-        let url = Url::parse(&self.config.clocko_base_url)?.join(endpoint.to_string().as_str())?;
+        let url = Url::parse(&self.config.clocko_base_url)?.join(endpoint.as_ref())?;
 
         Ok(self
             .client
