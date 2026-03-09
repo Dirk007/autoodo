@@ -1,7 +1,7 @@
 use anyhow::Result;
 use autoodo::{
     self,
-    autoodo::{ClockodoClient, ClockodoEndpoint, Config, MeResponse},
+    autoodo::{ClockodoClient, ClockodoEndpoint, Config, MeResponse, PresencesResponse},
 };
 use dotenv::dotenv;
 
@@ -17,6 +17,20 @@ async fn main() -> Result<()> {
         .data;
 
     println!("Your Clockodo ID: {}", myself.id);
+
+    let presences = client
+        .get::<PresencesResponse>(ClockodoEndpoint::Presences)
+        .await?
+        .data;
+
+    for presence in presences.users {
+        println!(
+            "User: {} ({}) -> {}",
+            presence.name,
+            presence.id,
+            presence.running_clock.is_some()
+        );
+    }
 
     Ok(())
 }

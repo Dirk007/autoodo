@@ -5,6 +5,17 @@ pub struct MeResponse {
     pub data: User,
 }
 
+#[derive(Deserialize)]
+pub struct PresencesResponse {
+    pub data: PresencesResponseData,
+}
+
+#[derive(Deserialize)]
+pub struct PresencesResponseData {
+    pub users: Vec<UserPresence>,
+    pub teams: Vec<EntityReference>,
+}
+
 pub struct AggregatedMeResponse {
     pub user: User,
     pub company: Company,
@@ -220,7 +231,7 @@ pub struct EntityReference {
 pub struct RunningClock {
     pub id: i32,
     pub time_since: String,
-    pub customer: EntityReference,
+    pub customer: Option<EntityReference>,
     pub project: Option<EntityReference>,
     pub subproject: Option<EntityReference>,
     pub service: Option<EntityReference>,
@@ -246,7 +257,7 @@ pub struct UserAbsence {
     pub approved_by: Option<i32>,
 }
 
-// Inofficial from web
+// Inofficial from web api/v2/users/presences
 #[derive(Deserialize)]
 pub struct UserPresence {
     pub id: i32,
