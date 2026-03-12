@@ -1,7 +1,10 @@
 use anyhow::Result;
 use autoodo::{
     self,
-    autoodo::{ClockodoClient, ClockodoEndpoint, Config, MeResponse, PresencesResponse},
+    autoodo::{
+        Config, MeResponse, PresencesResponse,
+        client::{ClockodoClient, ClockodoEndpoint},
+    },
 };
 use dotenv::dotenv;
 
