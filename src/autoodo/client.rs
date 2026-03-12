@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use crate::autoodo::Config;
 use anyhow::Result;
 use reqwest::header::HeaderMap;
@@ -42,7 +44,13 @@ impl AsRef<str> for ClockodoEndpoint {
 impl ClockodoClient {
     pub fn new(config: &Config) -> Result<Self> {
         let conf = config.clone();
-        let client = reqwest::Client::new();
+        let client = reqwest::Client::builder()
+            .connect_timeout(Duration::from_secs(2))
+            .read_timeout(Duration::from_secs(10))
+            .timeout(Duration::from_secs(30))
+            .user_agent(MY_APP_IDENT)
+            .build()?;
+
         let app_ident = format!("{};{}", MY_APP_IDENT, conf.clocko_email);
 
         let mut headers = HeaderMap::new();
