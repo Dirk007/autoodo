@@ -1,10 +1,11 @@
 use std::time::Duration;
 
-use crate::autoodo::Config;
 use anyhow::Result;
 use reqwest::header::HeaderMap;
 use serde::de::DeserializeOwned;
 use url::Url;
+
+use crate::autoodo::Config;
 
 const HEADER_API_USER: &'static str = "X-ClockodoApiUser";
 const HEADER_API_KEY: &'static str = "X-ClockodoApiKey";
@@ -60,8 +61,8 @@ impl ClockodoClient {
 
         Ok(ClockodoClient {
             config: conf,
-            client: client,
-            headers: headers,
+            client,
+            headers,
         })
     }
 
