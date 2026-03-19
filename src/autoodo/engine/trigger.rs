@@ -1,6 +1,11 @@
+use std::collections::HashMap;
+
 use anyhow::Result;
 
-use crate::autoodo::state::State;
-pub trait Trigger {
-    fn should_trigger(&self, state: &dyn State) -> Result<bool>;
+use crate::autoodo::{any::Any, state::State};
+pub trait Trigger
+where
+    Self: Send + Sync,
+{
+    fn should_trigger(&mut self, state: &State) -> Result<(bool, Option<HashMap<String, Any>>)>;
 }

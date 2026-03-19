@@ -22,7 +22,7 @@ pub struct AggregatedMeResponse {
     pub worktime_regulation: WorktimeRegulation,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq)]
 pub struct User {
     pub id: i32,
     pub name: String,
@@ -62,7 +62,7 @@ pub struct User {
     pub support_pin: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq)]
 pub struct Company {
     pub id: i32,
     pub name: String,
@@ -94,7 +94,7 @@ pub struct Company {
     pub target_hours_default: serde_json::Value,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq)]
 pub struct WorktimeRegulation {
     pub id: i32,
     pub name: String,
@@ -104,7 +104,7 @@ pub struct WorktimeRegulation {
     pub interval_max: i32,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq)]
 pub struct TimeEntry {
     pub id: i32,
     pub customers_id: i32,
@@ -136,7 +136,7 @@ pub struct TimeEntry {
     pub services_name: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq)]
 pub struct AccessGroup {
     pub id: i32,
     pub name: String,
@@ -154,7 +154,7 @@ pub struct Pagination {
     pub count_items: i32,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq)]
 pub struct Service {
     pub id: i32,
     pub name: String, // interne Arbeitszeit...
@@ -162,7 +162,7 @@ pub struct Service {
     pub active: bool,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq)]
 pub struct Project {
     pub id: i32,
     pub customers_id: i32,
@@ -186,7 +186,7 @@ pub struct Project {
     pub service_assignments: Vec<serde_json::Value>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq)]
 pub struct Team {
     pub id: i32,
     pub name: String,
@@ -221,13 +221,13 @@ impl ToString for UserFilter {
     }
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq, Clone)]
 pub struct EntityReference {
     pub id: i32,
     pub name: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq, Clone)]
 pub struct RunningClock {
     pub id: i32,
     pub time_since: String,
@@ -238,7 +238,7 @@ pub struct RunningClock {
     pub text: Option<String>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq, Clone)]
 pub struct UserAbsence {
     pub id: i32,
     pub users_id: i32,
@@ -258,7 +258,7 @@ pub struct UserAbsence {
 }
 
 // Inofficial from web api/v2/users/presences
-#[derive(Deserialize)]
+#[derive(Deserialize, PartialEq, Clone)]
 pub struct UserPresence {
     pub id: i32,
     pub name: String,
