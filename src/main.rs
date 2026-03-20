@@ -5,7 +5,7 @@ use async_trait::async_trait;
 use autoodo::{
     self,
     autoodo::{
-        Action, AutoodoEngine, Config, Engine, MeResponse, PresencesResponse, Trigger,
+        Action, AutoodoEngine, Config, Engine, MeResponse, PresencesResponse, RunningClock, Trigger,
         any::Any,
         client::{ClockodoClient, ClockodoEndpoint},
         state::State,
@@ -23,6 +23,7 @@ impl Trigger for ClockChangeTrigger {
             let mut changed_users = Vec::new();
 
             for (user_name, presence) in &state.users_presence {
+                println!("CHECK {}", user_name);
                 if let Some(old_presence) = old.users_presence.get(user_name) {
                     if presence != old_presence {
                         if presence.running_clock != old_presence.running_clock {
@@ -91,7 +92,16 @@ async fn main() -> Result<()> {
         .await?;
 
     let state = State::from(presences.users);
+    let mut state_fake = state.clone();
     engine.run_one(state).await?;
+
+    // Fake clock changes
+    state_fake
+        .users_presence
+        .entry("Dirk Faust".to_string())
+        .and_modify(|e| e.running_clock = Some(RunningClock::new(123)));
+
+    engine.run_one(state_fake).await?;
 
     Ok(())
 }

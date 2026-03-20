@@ -238,6 +238,20 @@ pub struct RunningClock {
     pub text: Option<String>,
 }
 
+impl RunningClock {
+    pub fn new(id: i32) -> Self {
+        RunningClock {
+            id,
+            time_since: String::new(),
+            customer: None,
+            project: None,
+            subproject: None,
+            service: None,
+            text: None,
+        }
+    }
+}
+
 #[derive(Deserialize, PartialEq, Clone)]
 pub struct UserAbsence {
     pub id: i32,

@@ -2,6 +2,7 @@ use std::sync::Arc;
 
 use anyhow::Result;
 use async_trait::async_trait;
+use log::debug;
 use tokio::sync::Mutex;
 
 use crate::autoodo::{Action, Trigger, state::State};
@@ -34,8 +35,10 @@ impl Engine for AutoodoEngine {
     async fn run_one(&self, state: State) -> Result<()> {
         let mut logic = self.logic.lock().await;
         for (trigger, action) in logic.iter_mut() {
+            println!("RUN ONE");
             let (should_trigger, params) = trigger.should_trigger(&state)?;
             if should_trigger {
+                println!("TRIGGER ONE");
                 action.execute(params, &state).await?;
             }
         }
