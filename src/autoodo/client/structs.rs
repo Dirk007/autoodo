@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -269,4 +271,10 @@ pub struct UserPresence {
     pub absences: Vec<UserAbsence>,
     pub running_clock: Option<RunningClock>,
     pub can_manage_absences: bool,
+}
+
+impl Into<(String, UserPresence)> for UserPresence {
+    fn into(self) -> (String, UserPresence) {
+        (self.name.clone(), self)
+    }
 }

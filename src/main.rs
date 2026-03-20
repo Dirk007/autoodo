@@ -22,13 +22,12 @@ impl Trigger for ClockChangeTrigger {
         if let Some(old) = &self.old {
             let mut changed_users = Vec::new();
 
-            for presence in &state.users_presence {
-                if let Some(old_presence) = old.users_presence.iter().find(|p| p.id == presence.id) {
-                    let old_has_clock = old_presence.running_clock.is_some();
-                    let new_has_clock = presence.running_clock.is_some();
-
-                    if old_has_clock != new_has_clock {
-                        changed_users.push(Any::String(presence.name.clone()));
+            for (user_name, presence) in &state.users_presence {
+                if let Some(old_presence) = old.users_presence.get(user_name) {
+                    if presence != old_presence {
+                        if presence.running_clock != old_presence.running_clock {
+                            changed_users.push(Any::String(user_name.clone()));
+                        }
                     }
                 }
             }
@@ -91,8 +90,7 @@ async fn main() -> Result<()> {
         .add_logic(Box::new(ClockChangeTrigger::new()), Box::new(PrinterAction {}))
         .await?;
 
-    let mut state = State::new();
-    state.users_presence = presences.users;
+    let state = State::from(presences.users);
     engine.run_one(state).await?;
 
     Ok(())
