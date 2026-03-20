@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -57,7 +55,7 @@ pub struct User {
     pub created_at: String,
     pub worktime_regulation_id: Option<i32>,
     pub edit_lock: Option<String>,
-    pub edit_lock_dyn: Option<String>,
+    pub edit_lock_dyn: Option<i32>,
     pub edit_lock_sync: bool,
     pub work_time_edit_lock_days: i32,
     pub access_groups_ids: Vec<i32>,
