@@ -66,16 +66,31 @@ impl ClockodoClient {
         })
     }
 
+    #[cfg(debug_assertions)]
+    fn should_print_debug(&self) -> bool {
+        true
+    }
+    #[cfg(not(debug_assertions))]
+    fn should_print_debug(&self) -> bool {
+        false
+    }
+
     pub async fn get<T: DeserializeOwned>(&self, endpoint: ClockodoEndpoint) -> Result<T> {
         let url = Url::parse(&self.config.clocko_base_url)?.join(endpoint.as_ref())?;
 
-        Ok(self
+        let response = self
             .client
             .get(url)
             .headers(self.headers.clone())
             .send()
             .await?
-            .json::<T>()
-            .await?)
+            .text()
+            .await?;
+
+        if self.should_print_debug() {
+            println!("Response body: {}", response);
+        }
+
+        Ok(serde_json::from_str(&response)?)
     }
 }
